@@ -9,11 +9,8 @@ import { Router } from 'express';
 
 const router = Router();
 
-/** Examples */
-/* router.get('/', getItems);
-router.get('/:id', getItemById);
-router.post('/', createItem);
-router.put('/:id', updateItem);
-router.delete('/:id', deleteItem); */
+router.get('/register', (req, res) => {
+  res.render('register');
+});
 
 export default router;

@@ -18,18 +18,21 @@
   },
   "license": "ISC",
   "author": "Rebecca Lindman",
-  "type": "module",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon"
+    "dev": "nodemon"
   },
   "dependencies": {
-    "node": "^22.16.0"
+    "bcrypt": "^6.0.0",
+    "node": "^22.16.0",
+    "pg": "^8.16.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.29",
+    "@types/pg": "^8.15.4",
     "dotenv": "^16.5.0",
     "eslint": "^9.28.0",
     "express": "^5.1.0",
