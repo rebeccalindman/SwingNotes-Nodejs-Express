@@ -8,3 +8,11 @@ export async function addNewUser(user: NewUser) {
     );
     return result.rows[0];
 }
+
+export async function getUserByEmail(email: string) {
+    const result = await db.query(
+        "SELECT * FROM users WHERE email = $1",
+        [email]
+    );
+    return result.rows[0];
+}
