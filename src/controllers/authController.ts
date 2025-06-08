@@ -17,15 +17,15 @@ import { HTTP_STATUS } from "../constants/httpStatus";
 
 export async function register(req: Request, res: Response, next: NextFunction) {
   try {
-    const { username, password, email, role = "user" } = req.body;
+    const { username, password, email, role } = req.body;
 
     if (!username || !password || !email) {
       return next(createError("Missing required fields", HTTP_STATUS.BAD_REQUEST));
     }
 
     const validRoles = ["user", "admin"];
-    if (!validRoles.includes(role)) {
-      return next(createError("Invalid role", HTTP_STATUS.BAD_REQUEST));
+    if (role && !validRoles.includes(role)) {
+    return next(createError("Invalid role", HTTP_STATUS.BAD_REQUEST));
     }
 
     const existingUser = await doesUserExistByEmail(email); //todo your service function
@@ -39,7 +39,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
       username,
       hashedPassword,
       email,
-      role,
+      ...(role && { role }),
     };
 
     const createdUser: PublicUser = await addNewUser(newUser);
