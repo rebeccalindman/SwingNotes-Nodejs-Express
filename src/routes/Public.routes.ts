@@ -126,7 +126,7 @@ router.post('/register', validateRegisterInput, checkUserNotExists, register);
  *               properties:               
  *                 message:
  *                   type: string
- *                 user:
+ *                 username:
  *                   type: object
  *                   properties:
  *                     id:
@@ -137,10 +137,8 @@ router.post('/register', validateRegisterInput, checkUserNotExists, register);
  *                       type: string
  *                     role:
  *                       type: string
- *                     created_at:
- *                       type: string
- *                     updated_at:
- *                       type: string
+ *                 token:
+ *                   type: string
  *       400:
  *         description: Bad request
  *         content:

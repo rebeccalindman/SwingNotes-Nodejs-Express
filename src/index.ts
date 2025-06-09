@@ -6,7 +6,9 @@ import pool from './db';
 import { errorHandler } from './middleware/errorHandler';
 import { setupSwagger } from './swagger';
 import PublicRoutes from "./routes/Public.routes";
+import ProtectedRoutes from './routes/Protected.routes';
 import { requestLogger } from './middleware/requestLogger';
+
 
 const app = express();
 
@@ -18,7 +20,7 @@ app.use(express.json());
 
 // Routes
 app.use(PublicRoutes);
-
+app.use(ProtectedRoutes); // requires JWT authentication
 
 // Error handler
 app.use(errorHandler); 

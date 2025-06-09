@@ -25,3 +25,12 @@ export interface PublicUser {
   role: string;
   created_at: string;
 }
+
+export type UserJwtPayload = {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  iat?: number;
+  exp?: number;
+};

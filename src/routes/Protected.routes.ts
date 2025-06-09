@@ -8,7 +8,9 @@ router.use(verifyJWT);
 
 // create note
 router.post('/notes', (req, res) => {
-    res.send('create note');});
+    const { title, text } = req.body;
+    res.send(`create note: ${title} ${text}`);
+});
 // update note
 router.put('/notes/:id', (req, res) => {
     res.send('update note');
