@@ -1,14 +1,11 @@
 // types/express/index.d.ts
 import express from 'express';
+import { User } from '../user';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: {
-        id: string;
-        username: string;
-        // add any other properties your user object has
-      };
+      user?: User;
     }
   }
 }

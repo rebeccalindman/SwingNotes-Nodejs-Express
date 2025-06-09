@@ -1,13 +1,12 @@
 // /controllers/usersController.ts
-// * handles get/update/delete users
+
+import pool from "../db";
 
 // todo
 // GET /users/:id
 // PUT /users/:id
 // DELETE /users/:id
 // GET /users
-
-
 
 
 

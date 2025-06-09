@@ -11,11 +11,15 @@ import { Request, Response, NextFunction } from "express";
 import { addNewUser } from "../services/userService";
 import { NewUser, PublicUser } from "../types/user";
 import bcrypt from "bcrypt";
-import { doesUserExistByEmail } from "../services/userService";
 import { createError } from "../utils/createError";
 import { HTTP_STATUS } from "../constants/httpStatus";
+import jwt from 'jsonwebtoken';
+import { RequestWithUser } from "../types/express/requestWithUser";
+import logger from "../utils/logger";
 
-export async function register(req: Request, res: Response, next: NextFunction) {
+
+
+export async function register(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { username, password, email, role } = req.body;
 
@@ -28,10 +32,6 @@ export async function register(req: Request, res: Response, next: NextFunction) 
     return next(createError("Invalid role", HTTP_STATUS.BAD_REQUEST));
     }
 
-    const existingUser = await doesUserExistByEmail(email); //todo your service function
-    if (existingUser) {
-      return next(createError("User already exists", HTTP_STATUS.CONFLICT));
-    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -53,6 +53,38 @@ export async function register(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-export const login = (req: Request, res: Response, next: NextFunction) => {
-  // todo
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { password } = req.body;
+    const user = (req as RequestWithUser).user;
+
+    if (!user?.hashedpassword) {
+      return next(createError("Incorrect user credentials", HTTP_STATUS.INTERNAL_SERVER_ERROR));
+    }
+
+
+    const isMatch = await bcrypt.compare(password, user.hashedpassword);
+  
+    if (!isMatch) {
+      return next(createError("Invalid credentials", HTTP_STATUS.UNAUTHORIZED));
+    }
+  
+    // generate JWT token
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET environment variable is not defined');
+    }
+
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    // send JWT token in response
+    res.status(HTTP_STATUS.OK).json({
+      message: "Login successful",
+      token,
+    });
+
+  } catch (err) {
+    next(err)
+  }
 };

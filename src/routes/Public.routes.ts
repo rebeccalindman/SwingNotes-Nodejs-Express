@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { validateRegisterInput, checkUserExists } from '../middleware/auth';
-import { register } from '../controllers/authController';
+import { validateLoginFields, validateRegisterInput} from '../middleware/auth';
+import { login, register } from '../controllers/authController';
+import { checkUserExists, checkUserNotExists } from '../middleware/userChecks';
 
 const router = Router();
 
@@ -90,6 +91,7 @@ const router = Router();
  *                 error:
  *                   type: string
  */
-router.post('/register', validateRegisterInput, checkUserExists, register);
+router.post('/register', validateRegisterInput, checkUserNotExists, register);
+router.post('/login', validateLoginFields, checkUserExists, login);
 
 export default router;

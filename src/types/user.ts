@@ -4,7 +4,7 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  hashedPassword: string; 
+  hashedpassword: string; 
   role: string;
   created_at: Date; 
   updated_at?: Date; 
@@ -14,7 +14,7 @@ export interface User {
 export interface NewUser {
   username: string;
   email: string;
-  hashedPassword: string;
+  hashedpassword: string;
   role?: string; // (defaults to 'user' in db if not provided)
 }
 
