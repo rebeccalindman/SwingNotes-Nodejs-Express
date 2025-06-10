@@ -2,14 +2,12 @@
 // *  handles login, register, etc.
 
 // todo
-// POST /register
-// POST /login
 // POST /logout
 // POST /reset-password
 
 import { Request, Response, NextFunction } from "express";
 import { addNewUser } from "../services/userService";
-import { NewUser, PublicUser } from "../types/user";
+import { NewUser, PublicUser, UserJwtPayload } from "../types/user";
 import bcrypt from "bcrypt";
 import { createError } from "../utils/createError";
 import { HTTP_STATUS } from "../constants/httpStatus";
@@ -33,11 +31,11 @@ export async function register(req: Request, res: Response, next: NextFunction):
     }
 
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedpassword = await bcrypt.hash(password, 10);
 
     const newUser: NewUser = {
       username,
-      hashedPassword,
+      hashedpassword,
       email,
       ...(role && { role }),
     };
@@ -69,18 +67,31 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
       return next(createError("Invalid credentials", HTTP_STATUS.UNAUTHORIZED));
     }
   
-    // generate JWT token
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET environment variable is not defined');
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    /**
+     * JWT payload
+     * Does not include any sensitive information
+     */
+    const payload: UserJwtPayload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
     // send JWT token in response
     res.status(HTTP_STATUS.OK).json({
       message: "Login successful",
+      user: {
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
       token,
     });
 

@@ -1,5 +1,4 @@
 // /types/user.ts
-// types/user.ts
 export interface User {
   id: string;
   username: string;
@@ -20,9 +19,17 @@ export interface NewUser {
 
 // Client receives 
 export interface PublicUser {
-  id: string;
   username: string;
   email: string;
   role: string;
   created_at: string;
 }
+
+export type UserJwtPayload = {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  iat?: number;
+  exp?: number;
+};

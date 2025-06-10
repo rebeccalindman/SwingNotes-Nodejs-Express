@@ -5,14 +5,15 @@ import { HTTP_STATUS } from "../constants/httpStatus";
 
 
 export const checkUserExists = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, username } = req.body;
-  let user;
+  const { identifier } = req.body;
 
-  if (email) {
-    user = await findUserByEmail(email);
-  } else if (username) {
-    user = await findUserByUsername(username);
-  }
+    let user;
+
+    if (identifier.includes("@")) {
+    user = await findUserByEmail(identifier);
+    } else {
+    user = await findUserByUsername(identifier);
+    }
 
   if (!user) {
     return next(createError("User not found", HTTP_STATUS.NOT_FOUND));
@@ -23,19 +24,23 @@ export const checkUserExists = async (req: Request, res: Response, next: NextFun
 };
 
 export const checkUserNotExists = async (req: Request, res: Response, next: NextFunction) => {
-    const { email, username } = req.body;
-    let user;
+  const { email, username } = req.body;
 
-    if (email) {
-        user = await findUserByEmail(email);
-    } else if (username) {
-        user = await findUserByUsername(username);
-    }
+  if (!email || !username) {
+    return next(createError("Email and username are required", HTTP_STATUS.BAD_REQUEST));
+  }
 
-    if (user) {
-        return next(createError(`User already exists for this ${email ? "email" : "username"}`, HTTP_STATUS.CONFLICT));
-    }
-    next();
+  const userByEmail = await findUserByEmail(email);
+  if (userByEmail) {
+    return next(createError("User already exists with this email", HTTP_STATUS.CONFLICT));
+  }
 
+  const userByUsername = await findUserByUsername(username);
+  if (userByUsername) {
+    return next(createError("User already exists with this username", HTTP_STATUS.CONFLICT));
+  }
+
+  next();
 };
+
 

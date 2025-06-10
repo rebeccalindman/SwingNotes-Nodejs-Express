@@ -3,16 +3,23 @@ import { NewUser, PublicUser } from "../types/user";
 import pool from "../db";
 
 
-export async function addNewUser(user: NewUser): Promise<PublicUser> {
-    const result = await pool.query(
-        `INSERT INTO users (username, email, hashedpassword, role)
-         VALUES ($1, $2, $3, $4)
-         RETURNING id, username, email, role, created_at`,
-        [user.username, user.email, user.hashedpassword, user.role]
-    );
+export const addNewUser = async (user: NewUser): Promise<PublicUser> => {
+  const values = [user.username, user.hashedpassword, user.email];
+  let query = `
+    INSERT INTO users (username, hashedpassword, email`;
 
-    return result.rows[0]; // Return the PublicUser
-}
+  if (user.role) { // role is optional, this prevents null in DB
+    query += `, role`;
+    values.push(user.role);
+  }
+
+  query += `)
+    VALUES ($1, $2, $3${user.role ? ', $4' : ''})
+    RETURNING id, username, email, role, created_at`;
+
+  const result = await pool.query(query, values);
+  return result.rows[0];
+};
 
 
 export async function getAllUsers(): Promise<PublicUser[]> {

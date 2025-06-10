@@ -6,7 +6,10 @@ import pool from './db';
 import { errorHandler } from './middleware/errorHandler';
 import { setupSwagger } from './swagger';
 import PublicRoutes from "./routes/Public.routes";
+import ProtectedRoutes from './routes/Protected.routes';
 import { requestLogger } from './middleware/requestLogger';
+import { verifyJWT } from './middleware/auth';
+
 
 const app = express();
 
@@ -16,14 +19,14 @@ const port = 3000;
 
 app.use(express.json());
 
+setupSwagger(app);
 // Routes
 app.use(PublicRoutes);
-
+app.use(verifyJWT, ProtectedRoutes); // requires JWT authentication
 
 // Error handler
 app.use(errorHandler); 
 
-setupSwagger(app);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
