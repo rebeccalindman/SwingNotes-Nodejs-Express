@@ -80,6 +80,33 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+        AdminUser: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              format: 'uuid',
+            },
+            username: {
+              type: 'string',
+            },
+            email: {
+              type: 'string',
+            },
+            role: {
+              type: 'string',
+            },
+            created_at: {
+              type: 'string',
+              format: 'date-time',
+            },
+            updated_at: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+            },
+          },
+        },
         NewUser: {
           type: 'object',
           required: ['username', 'password', 'email'],
