@@ -111,19 +111,6 @@ const options: swaggerJsdoc.Options = {
         }
       },    
     },
-/*     securityDefinitions: {
-      bearerAuth: {
-        type: 'apiKey',
-        name: 'Authorization',
-        scheme: 'bearer',
-        in: 'header',
-      },
-    },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ], */
   },
     apis: ['./src/routes/*.ts'], // ← points to your route files
   };
