@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createNote, deleteNoteForUser, getNoteById } from '../controllers/notesController';
+import { createNote, deleteNoteForUser, getAllNotesForUser, getNoteById } from '../controllers/notesController';
 import { validateNewNote } from '../middleware/validateNewNote';
 
 
@@ -102,9 +102,30 @@ router.delete('/notes/:id', deleteNoteForUser);
 router.get('/notes/:id', getNoteById);
 
 // notes-list - get all notes
-router.get('/notes', (req, res) => {
-    res.send('get all notes');
-})
+/**
+ * @swagger
+ * /notes:
+ *   get:
+ *     summary: Get all notes for the user
+ *     tags:
+ *       - Notes
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Notes found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/PublicNote'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/notes', getAllNotesForUser);
 // notes-search (query)
 router.get('/notes/search', (req, res) => {
     res.send('search notes');

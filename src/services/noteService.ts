@@ -1,5 +1,6 @@
 import pool from "../db";
 import { NewNote, PublicNote, Note } from "../types/note";
+import { notesToPublicNotes } from "../utils/transformNotes";
 
 export const fetchNoteByIdForUser = async (noteId: string, userId: string): Promise<Note | null> => {
   const result = await pool.query(
@@ -27,4 +28,12 @@ export const addNewNote = async (note: NewNote, userId: string): Promise<PublicN
 
 export const deleteNote = async (noteId: string, userId: string): Promise<void> => {
   await pool.query("DELETE FROM notes WHERE id = $1 AND user_id = $2", [noteId, userId]);
+};
+
+export const fetchAllNotesForUser = async (userId: string): Promise<PublicNote[]> => {
+  const result = await pool.query(
+    `SELECT id, title, text, category, created_at, updated_at FROM notes WHERE user_id = $1`,
+    [userId]
+  );
+  return notesToPublicNotes(result.rows);
 };

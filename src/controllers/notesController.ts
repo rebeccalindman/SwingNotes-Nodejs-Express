@@ -1,6 +1,6 @@
 // src/controllers/notesController.ts
 import { Request, Response, NextFunction } from "express";
-import { fetchNoteByIdForUser, addNewNote, deleteNote } from "../services/noteService";
+import { fetchNoteByIdForUser, addNewNote, deleteNote, fetchAllNotesForUser } from "../services/noteService";
 import { noteToPublicNote } from "../utils/transformNotes";
 import { Note, PublicNote, NewNote } from "../types/note";
 import { HTTP_STATUS } from "../constants/httpStatus";
@@ -87,14 +87,17 @@ export const deleteNoteForUser = async (req: Request, res: Response, next: NextF
   }
 };
 
-/* export const getAllNotesForUser = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllNotesForUser = async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.user?.id;
   if (!userId) {
     return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
   }
 
   try {
-      
+    const notes = await fetchAllNotesForUser(userId);
+    res.status(HTTP_STATUS.OK).json({ notes: notes});
+  } catch (err) {
+    console.error("Error fetching notes:", err);
+    next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));
   }
-
- */
+};
