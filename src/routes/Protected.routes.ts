@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getNoteById, getNotesByCategory } from '../controllers/notesController';
+import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getNoteById, getNotesForCategory } from '../controllers/notesController';
 import { validateNewNote } from '../middleware/validateNewNote';
 import { get } from 'http';
 
@@ -34,7 +34,7 @@ router.get('/notes/categories', getAllCategoriesForUser);
  *         description: Internal server error
  */
 // get all notes for a category and user
-router.get('/notes/categories/:category', getNotesByCategory)
+router.get('/notes/categories/:category', getNotesForCategory)
 
 // todo notes-search (query)
 router.get('/notes/search/', (req, res) => {

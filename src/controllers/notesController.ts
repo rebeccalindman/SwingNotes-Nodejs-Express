@@ -1,6 +1,6 @@
 // src/controllers/notesController.ts
 import { Request, Response, NextFunction } from "express";
-import { fetchNoteByIdForUser, addNewNote, deleteNote, fetchAllNotesForUser, fetchNotesByCategory, fetchNotesCategoriesForUser } from "../services/noteService";
+import { fetchNoteByIdForUser, addNewNote, deleteNote, fetchAllNotesForUser, fetchNotesCategoriesForUser, fetchNotesForCategory } from "../services/noteService";
 import { noteToPublicNote } from "../utils/transformNotes";
 import { Note, PublicNote, NewNote } from "../types/note";
 import { HTTP_STATUS } from "../constants/httpStatus";
@@ -102,7 +102,7 @@ export const getAllNotesForUser = async (req: Request, res: Response, next: Next
   }
 };
 
-export const getNotesByCategory = async (req: Request, res: Response, next: NextFunction) => {
+export const getNotesForCategory = async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.user?.id;
   if (!userId) {
     return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
@@ -111,7 +111,7 @@ export const getNotesByCategory = async (req: Request, res: Response, next: Next
   const category = req.params.category;
 
   try {
-    const notes = await fetchNotesByCategory(category, userId);
+    const notes = await fetchNotesForCategory(category, userId);
     if (notes.length === 0) {
       return next(createError("No notes found for this category", HTTP_STATUS.NOT_FOUND));
     }
