@@ -58,3 +58,17 @@ export const validateLoginFields = (req: Request, res: Response, next: NextFunct
     }
     next();
 };
+
+export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return next(createError("Unauthorized: No user data", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  const { role } = req.user;
+
+  if (role !== "admin") {
+    return next(createError("Unauthorized: Admin role required", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  next();
+};

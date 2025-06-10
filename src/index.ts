@@ -8,8 +8,8 @@ import { setupSwagger } from './swagger';
 import PublicRoutes from "./routes/Public.routes";
 import ProtectedRoutes from './routes/Protected.routes';
 import { requestLogger } from './middleware/requestLogger';
-import { verifyJWT } from './middleware/auth';
-
+import { authorizeAdmin, verifyJWT } from './middleware/auth';
+import AdminRoutes from './routes/Admin.routes';
 
 const app = express();
 
@@ -23,6 +23,7 @@ setupSwagger(app);
 // Routes
 app.use(PublicRoutes);
 app.use(verifyJWT, ProtectedRoutes); // requires JWT authentication
+app.use('/admin', verifyJWT, authorizeAdmin, AdminRoutes); // requires admin role
 
 // Error handler
 app.use(errorHandler); 

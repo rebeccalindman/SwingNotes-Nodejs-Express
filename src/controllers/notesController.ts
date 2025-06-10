@@ -7,7 +7,8 @@ import {
     fetchAllNotesForUser, 
     fetchNotesCategoriesForUser, 
     fetchNotesForCategory,
-    fetchNotesBySearchTerm
+    fetchNotesBySearchTerm,
+    updateNote
 } from "../services/noteService";
 
 import { noteToPublicNote } from "../utils/transformNotes";
@@ -167,5 +168,50 @@ export const getNotesBySearchTerm = async (req: Request, res: Response, next: Ne
   } catch (err) {
     console.error("Error fetching notes:", err);
     next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));
+  }
+};
+
+export const updateNoteForUser = async (req: TypedAuthRequest<NewNote>, res: Response, next: NextFunction) => {
+  const userId = req.user?.id;
+  const noteId = req.params.id;
+
+  if (!userId) {
+    return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  if (!noteId) {
+    return next(createError("Provide a note ID", HTTP_STATUS.BAD_REQUEST));
+  }
+
+  if (!isUUID(noteId)) {
+    return next(createError("Invalid note ID format", HTTP_STATUS.BAD_REQUEST));
+  }
+
+  const note = await fetchNoteByIdForUser(noteId, userId);
+
+  if (!note) {
+    return next(createError("Note not found or not yours", HTTP_STATUS.NOT_FOUND));
+  }
+
+  if (!req.body.category) {
+    req.body.category = note.category;
+  }
+
+  let newNote = {
+    title: req.body.title || note.title,
+    text: req.body.text || note.text,
+    category: req.body.category || note.category,
+  };
+
+  if (!newNote.title || !newNote.text) {
+    return next(createError("Title and text are required", HTTP_STATUS.BAD_REQUEST));
+  }
+
+  try {
+    const updatedNote = await updateNote(noteId, userId, req.body);
+    res.status(HTTP_STATUS.OK).json({ message: "Note updated successfully", note: updatedNote });
+  } catch (err) {
+    console.error("Error updating note:", err);
+    next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));  
   }
 };

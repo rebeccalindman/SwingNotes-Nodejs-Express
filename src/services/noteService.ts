@@ -61,3 +61,13 @@ export const fetchNotesBySearchTerm = async (searchTerm: string, userId: string)
   );
   return notesToPublicNotes(result.rows);
 };
+
+export const updateNote = async (noteId: string, userId: string, note: NewNote): Promise<PublicNote> => {
+  const result = await pool.query(
+    `UPDATE notes SET title = $1, text = $2, category = $3
+     WHERE id = $4 AND user_id = $5
+     RETURNING id, title, text, category, created_at, updated_at`,
+    [note.title, note.text, note.category, noteId, userId]
+  );
+  return result.rows[0];
+};

@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getNoteById, getNotesBySearchTerm, getNotesForCategory } from '../controllers/notesController';
+import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getNoteById, getNotesBySearchTerm, getNotesForCategory, updateNoteForUser } from '../controllers/notesController';
 import { validateNewNote } from '../middleware/validateNewNote';
-import { get } from 'http';
 
 
 const router = Router();
@@ -151,9 +150,6 @@ router.get('/notes', getAllNotesForUser);
 router.post("/notes", validateNewNote, createNote);
 // update note
 
-router.put('/notes/:id', (req, res) => {
-    res.send('update note');
-})
 // delete note
 /**
  * @swagger
@@ -227,6 +223,7 @@ router.delete('/notes/:id', deleteNoteForUser);
  */
 router.get('/notes/:id', getNoteById);
 
+router.put('/notes/:id', updateNoteForUser);
 
 
 export default router;
