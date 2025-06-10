@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createNote, getNoteById } from '../controllers/notesController';
+import { createNote, deleteNoteForUser, getNoteById } from '../controllers/notesController';
 import { validateNewNote } from '../middleware/validateNewNote';
 
 
@@ -42,9 +42,32 @@ router.put('/notes/:id', (req, res) => {
     res.send('update note');
 })
 // delete note
-router.delete('/notes/:id', (req, res) => {
-    res.send('delete note');
-})
+/**
+ * @swagger
+ * /notes/{id}:
+ *   delete:
+ *     summary: Delete a note
+ *     tags:
+ *       - Notes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Note deleted
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Note not found
+ *       500:
+ *         description: Internal server error
+ */
+router.delete('/notes/:id', deleteNoteForUser);
 // get one note
 /**
  * @swagger
@@ -76,9 +99,7 @@ router.delete('/notes/:id', (req, res) => {
  *       500:
  *         description: Internal server error
  */
-router.get('/notes/:id', (req, res, next) => {
-  getNoteById(req, res, next);
-});
+router.get('/notes/:id', getNoteById);
 
 // notes-list - get all notes
 router.get('/notes', (req, res) => {

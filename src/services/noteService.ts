@@ -24,3 +24,7 @@ export const addNewNote = async (note: NewNote, userId: string): Promise<PublicN
 
   return result.rows[0]; // Return the PublicNote
 };
+
+export const deleteNote = async (noteId: string, userId: string): Promise<void> => {
+  await pool.query("DELETE FROM notes WHERE id = $1 AND user_id = $2", [noteId, userId]);
+};

@@ -1,11 +1,12 @@
 // src/controllers/notesController.ts
 import { Request, Response, NextFunction } from "express";
-import { fetchNoteByIdForUser, addNewNote } from "../services/noteService";
+import { fetchNoteByIdForUser, addNewNote, deleteNote } from "../services/noteService";
 import { noteToPublicNote } from "../utils/transformNotes";
 import { Note, PublicNote, NewNote } from "../types/note";
 import { HTTP_STATUS } from "../constants/httpStatus";
 import { TypedAuthRequest } from '../types/express/typedRequest';
 import { validate as isUUID } from 'uuid';
+import { createError } from "../utils/createError";
 
 export const createNote = async (
   req: TypedAuthRequest<NewNote>,
@@ -29,26 +30,71 @@ export const createNote = async (
 
 
 export const getNoteById = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  const noteId = req.params.id;
+  if (!isUUID(noteId)) {
+    return next(createError("Invalid note ID format", HTTP_STATUS.BAD_REQUEST));
+  }
+
   try {
-    const userId = req.user?.id;
-    if (!userId) {
-      return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: "Unauthorized" });
-    }
-
-    const noteId = req.params.id;
-    if (!isUUID(noteId)) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: "Invalid note ID format" });
-    }
-
     const note = await fetchNoteByIdForUser(noteId, userId);
 
     if (!note) {
-      return res.status(HTTP_STATUS.NOT_FOUND).json({ error: "Note not found or not yours" });
+      return next(createError("Note not found or not yours", HTTP_STATUS.NOT_FOUND));
     }
 
     res.status(HTTP_STATUS.OK).json({ note: noteToPublicNote(note) });
   } catch (err) {
     console.error("Error fetching note:", err);
-    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));
   }
 };
+
+export const deleteNoteForUser = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user?.id;
+  const noteId = req.params.id;
+
+  if (!userId) {
+    return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  if (!noteId) {
+    return next(createError("Provide a note ID", HTTP_STATUS.BAD_REQUEST));
+  }
+
+  const note = await fetchNoteByIdForUser(noteId, userId);
+
+  if (!note) {
+    return next(createError("Note not found or not yours", HTTP_STATUS.NOT_FOUND));
+  }
+
+  if (!isUUID(noteId)) {
+    return next(createError("Invalid note ID format", HTTP_STATUS.BAD_REQUEST));
+  }
+
+  try {
+    await deleteNote(noteId, userId);
+    res.status(HTTP_STATUS.OK).json({ message: "Note deleted successfully", Deleted: noteId });
+    return;
+  } catch (err) {
+    console.error("Error deleting note:", err);
+    next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));
+    return;
+  }
+};
+
+/* export const getAllNotesForUser = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  try {
+      
+  }
+
+ */
