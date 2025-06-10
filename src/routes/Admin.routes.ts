@@ -1,12 +1,11 @@
 import { NextFunction, Router } from 'express';
 import { Request, Response } from 'express';
+import { getAllUsersForAdmin } from '../controllers/usersController';
 
 const router = Router();
 
 // admin routes
-router.get('/users', (req: Request, res: Response, next: NextFunction) => {
-    res.status(200).json({ message: 'Get all users' });
-});
+router.get('/users', getAllUsersForAdmin);
 
 // update user role by user id
 

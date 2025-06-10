@@ -22,7 +22,7 @@ export const addNewUser = async (user: NewUser): Promise<PublicUser> => {
 };
 
 
-export async function getAllUsers(): Promise<PublicUser[]> {
+export async function fetchAllUsers(): Promise<PublicUser[]> {
     const result = await pool.query("SELECT id, username, email, role, created_at FROM users");
     return result.rows;
 }
