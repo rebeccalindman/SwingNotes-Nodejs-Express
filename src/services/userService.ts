@@ -8,7 +8,7 @@ export const addNewUser = async (user: NewUser): Promise<PublicUser> => {
   let query = `
     INSERT INTO users (username, hashedpassword, email`;
 
-  if (user.role) {
+  if (user.role) { // role is optional, this prevents null in DB
     query += `, role`;
     values.push(user.role);
   }

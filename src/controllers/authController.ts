@@ -31,11 +31,11 @@ export async function register(req: Request, res: Response, next: NextFunction):
     }
 
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedpassword = await bcrypt.hash(password, 10);
 
     const newUser: NewUser = {
       username,
-      hashedPassword,
+      hashedpassword,
       email,
       ...(role && { role }),
     };
