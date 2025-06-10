@@ -19,7 +19,6 @@ export interface NewUser {
 
 // Client receives 
 export interface PublicUser {
-  id: string;
   username: string;
   email: string;
   role: string;

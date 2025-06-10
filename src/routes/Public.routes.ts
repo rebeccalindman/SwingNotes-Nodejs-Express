@@ -18,25 +18,7 @@ const router = Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - username
- *               - password
- *               - email
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *               email:
- *                 type: string
- *               role:
- *                 type: string
- *                 enum:
- *                   - user
- *                   - admin
- *                 default: user
- *                 nullable: true
+ *              $ref: '#/components/schemas/NewUser'
  *
  *     responses:
  *       201:
@@ -44,25 +26,7 @@ const router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                     username:
- *                       type: string
- *                     email:
- *                       type: string
- *                     role:
- *                       type: string
- *                     created_at:
- *                       type: string
- *                     updated_at:
- *                       type: string
+ *               $ref: '#/components/schemas/NewUser'
  *       400:
  *         description: Bad request
  *         content:
@@ -126,11 +90,9 @@ router.post('/register', validateRegisterInput, checkUserNotExists, register);
  *               properties:               
  *                 message:
  *                   type: string
- *                 username:
+ *                 user:
  *                   type: object
  *                   properties:
- *                     id:
- *                       type: string
  *                     username:
  *                       type: string
  *                     email:
