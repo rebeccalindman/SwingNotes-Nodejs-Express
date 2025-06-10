@@ -24,7 +24,6 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
     
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        console.log("JWT_SECRET:", JWT_SECRET);
 
         if (
             typeof decoded === "object" &&
@@ -34,7 +33,7 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
             "role" in decoded
         ) {
             req.user = decoded as UserJwtPayload;
-            return next(); // ✅ return here so it doesn't fall through
+            return next(); 
         } else {
             return next(createError("Unauthorized: Invalid token payload", HTTP_STATUS.UNAUTHORIZED));
         }
