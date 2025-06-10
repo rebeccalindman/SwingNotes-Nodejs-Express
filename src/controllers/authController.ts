@@ -88,7 +88,6 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
     res.status(HTTP_STATUS.OK).json({
       message: "Login successful",
       user: {
-        id: user.id,
         username: user.username,
         email: user.email,
         role: user.role,
