@@ -1,6 +1,6 @@
 // src/controllers/notesController.ts
 import { Request, Response, NextFunction } from "express";
-import { fetchNoteByIdForUser, addNewNote, deleteNote, fetchAllNotesForUser } from "../services/noteService";
+import { fetchNoteByIdForUser, addNewNote, deleteNote, fetchAllNotesForUser, fetchNotesByCategory, fetchNotesCategoriesForUser } from "../services/noteService";
 import { noteToPublicNote } from "../utils/transformNotes";
 import { Note, PublicNote, NewNote } from "../types/note";
 import { HTTP_STATUS } from "../constants/httpStatus";
@@ -96,6 +96,45 @@ export const getAllNotesForUser = async (req: Request, res: Response, next: Next
   try {
     const notes = await fetchAllNotesForUser(userId);
     res.status(HTTP_STATUS.OK).json({ notes: notes});
+  } catch (err) {
+    console.error("Error fetching notes:", err);
+    next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));
+  }
+};
+
+export const getNotesByCategory = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  const category = req.params.category;
+
+  try {
+    const notes = await fetchNotesByCategory(category, userId);
+    if (notes.length === 0) {
+      return next(createError("No notes found for this category", HTTP_STATUS.NOT_FOUND));
+    }
+    res.status(HTTP_STATUS.OK).json({ notes: notes});
+  } catch (err) {
+    console.error("Error fetching notes:", err);
+    next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));
+  }
+};
+
+export const getAllCategoriesForUser = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  try {
+    const categories = await fetchNotesCategoriesForUser(userId);
+    res.status(HTTP_STATUS.OK).json({ categories: categories});
+
+    if (categories.length === 0) {
+      return next(createError("No categories found", HTTP_STATUS.NOT_FOUND));
+    }
   } catch (err) {
     console.error("Error fetching notes:", err);
     next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));

@@ -37,3 +37,19 @@ export const fetchAllNotesForUser = async (userId: string): Promise<PublicNote[]
   );
   return notesToPublicNotes(result.rows);
 };
+
+export const fetchNotesByCategory = async (category: string, userId: string): Promise<PublicNote[]> => {
+  const result = await pool.query(
+    `SELECT id, title, text, category, created_at, updated_at FROM notes WHERE user_id = $1 AND category = $2`,
+    [userId, category]
+  );
+  return notesToPublicNotes(result.rows);
+};
+
+export const fetchNotesCategoriesForUser = async (userId: string): Promise<string[]> => {
+  const result = await pool.query(
+    `SELECT DISTINCT category FROM notes WHERE user_id = $1`,
+    [userId]
+  );
+  return result.rows.map((row) => row.category);
+}

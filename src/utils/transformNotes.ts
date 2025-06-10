@@ -5,6 +5,7 @@ export const noteToPublicNote = (note: Note): PublicNote => ({
     id: note.id,
     title: note.title,
     text: note.text,
+    category: note.category,
     created_at: note.created_at.toISOString(),
     updated_at: note.updated_at?.toISOString(),
 });
