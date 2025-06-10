@@ -1,8 +1,7 @@
 // src/index.ts
 import handleProcessEvents from './startup/handleProcessEvents';
 handleProcessEvents();
-import express, { Request, Response, NextFunction } from 'express';
-import pool from './db';
+import express from 'express';
 import { errorHandler } from './middleware/errorHandler';
 import { setupSwagger } from './swagger';
 import PublicRoutes from "./routes/Public.routes";

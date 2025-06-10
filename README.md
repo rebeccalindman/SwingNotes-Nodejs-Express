@@ -3,8 +3,15 @@ A secure and structured backend API built with Node.js, Express, PostgreSQL, and
 
 
 # Installation 
-Clone the repository and install dependencies:
+1. Clone the repository
+
+2. Install dependencies:
 ``npm i``
+3. Create "logs" folder in project root if it does not exist
+``mkdir logs``
+4. Set up neccessary .env variables, copy the .env.example and rename it .env
+    - set up connection with database (e.g. Neon)
+    - set a generated secret key
 
 # Running the App (Dev Mode)
 

@@ -55,6 +55,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     const { password } = req.body;
     const user = (req as RequestWithUser).user;
+    console.log(user);
 
     if (!user?.hashedpassword) {
       return next(createError("Incorrect user credentials", HTTP_STATUS.INTERNAL_SERVER_ERROR));
