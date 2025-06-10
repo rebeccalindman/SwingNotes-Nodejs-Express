@@ -28,12 +28,12 @@ export async function fetchAllUsers(): Promise<PublicUser[]> {
 }
 
 export async function findUserByEmail(email: string) {
-  const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+  const result = await pool.query("SELECT id FROM users WHERE email = $1", [email]);
   return result.rows[0] || null;
 }
 
 export async function findUserByUsername(username: string) {
-  const result = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+  const result = await pool.query("SELECT id FROM users WHERE username = $1", [username]);
   return result.rows[0] || null;
 }
 

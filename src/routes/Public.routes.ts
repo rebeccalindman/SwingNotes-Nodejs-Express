@@ -7,7 +7,7 @@ const router = Router();
 
 /**
  * @swagger
- * /register:
+ * /signup:
  *   post:
  *     summary: Register a new user account
  *     description: Register a new user account
@@ -55,7 +55,7 @@ const router = Router();
  *                 error:
  *                   type: string
  */
-router.post('/register', validateRegisterInput, checkUserNotExists, register);
+router.post('/signup', validateRegisterInput, checkUserNotExists, register);
 
 /**
  * @swagger

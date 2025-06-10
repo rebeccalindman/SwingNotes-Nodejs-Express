@@ -75,8 +75,5 @@ router.get('/users', getAllUsersForAdmin);
  */
 router.patch('/users/:id', patchUserRoleById );
 
-// delete user by user id
-
-// see how many notes a user has by user id
 
 export default router;
