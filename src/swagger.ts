@@ -99,6 +99,15 @@ const options: swaggerJsdoc.Options = {
               default: 'user',
             },
           },
+        },
+        ErrorResponse: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'string',
+              example: 'Error message',
+            },
+          },
         }
       },    
     },

@@ -53,3 +53,11 @@ export const fetchNotesCategoriesForUser = async (userId: string): Promise<strin
   );
   return result.rows.map((row) => row.category);
 }
+
+export const fetchNotesBySearchTerm = async (searchTerm: string, userId: string): Promise<PublicNote[]> => {
+  const result = await pool.query(
+    `SELECT id, title, text, category, created_at, updated_at FROM notes WHERE user_id = $2 AND (title ILIKE $1)`,
+    [`%${searchTerm}%`, userId]
+  );
+  return notesToPublicNotes(result.rows);
+};

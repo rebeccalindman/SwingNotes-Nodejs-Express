@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getNoteById, getNotesForCategory } from '../controllers/notesController';
+import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getNoteById, getNotesBySearchTerm, getNotesForCategory } from '../controllers/notesController';
 import { validateNewNote } from '../middleware/validateNewNote';
 import { get } from 'http';
 
@@ -8,6 +8,29 @@ const router = Router();
 
 
 // notes-categories
+/**
+ * @swagger
+ * /notes/categories:
+ *   get:
+ *     summary: Get all note categories for the user
+ *     tags:
+ *       - Notes
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Note categories found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/notes/categories', getAllCategoriesForUser);
 
 /**
@@ -37,9 +60,37 @@ router.get('/notes/categories', getAllCategoriesForUser);
 router.get('/notes/categories/:category', getNotesForCategory)
 
 // todo notes-search (query)
-router.get('/notes/search/', (req, res) => {
-    res.send('search notes');
-})
+/**
+ * @swagger
+ * /notes/search:
+ *   get:
+ *     summary: Search notes
+ *     tags:
+ *       - Notes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Search query
+ *     responses:
+ *       200:
+ *         description: Notes found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/PublicNote'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/notes/search', getNotesBySearchTerm);
 
 // notes-list - get all notes
 /**
@@ -122,6 +173,19 @@ router.put('/notes/:id', (req, res) => {
  *     responses:
  *       200:
  *         description: Note deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: Note deleted successfully
+ *                Deleted:
+ *                  type: string
+ *                  example: 550e8400-e29b-41d4-a716-446655440000
+ *                  format: uuid
+ *                  description: The ID of the deleted note
  *       401:
  *         description: Unauthorized
  *       404:
