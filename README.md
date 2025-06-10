@@ -12,6 +12,7 @@ A secure and structured backend API built with Node.js, Express, PostgreSQL, and
 4. Set up neccessary .env variables, copy the .env.example and rename it .env
     - set up connection with database (e.g. Neon)
     - set a generated secret key
+5. (If needed, run the SQL commands provided in ``/docs/setUpPSQL.md`` )
 
 # Running the App (Dev Mode)
 
