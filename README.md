@@ -12,7 +12,7 @@ A secure and structured backend API built with Node.js, Express, PostgreSQL, and
 4. Set up neccessary .env variables, copy the .env.example and rename it .env
     - set up connection with database (e.g. Neon)
     - set a generated secret key
-5. (If needed, run the SQL commands provided in ``/docs/setUpPSQL.md`` )
+5. (If needed, run the SQL commands provided in ``/docs/setUpPSQL.md`` to set up the basic DB structure in e.g. Neon or pgAdmin (requires alternative db.ts setup) )
 
 # Running the App (Dev Mode)
 
@@ -69,9 +69,6 @@ All notes can only be accessed by their owner (a verified user)
 # Endpoints 
 All endpoints except /signup and /login require JWT-authentication
 
-Aditional admin endpoints allow used manipulation:
-- GET /admin/users - gets a total count of users (number) and an array of users
-- PATCH /admin/users/:id - allows admin to change the user role for any user to either 'admin' or 'user'
 
 ## 🌍 Public
 | Method | Route  | Description          |

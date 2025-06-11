@@ -1,7 +1,7 @@
 ## Run the following in the query tool or SQL editor depending on db environment:
 
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+``` CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS users (
 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -44,3 +44,4 @@ CREATE TRIGGER set_updated_at_on_notes
 BEFORE UPDATE ON notes
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
+```
