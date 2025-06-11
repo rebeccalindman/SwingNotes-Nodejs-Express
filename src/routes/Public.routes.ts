@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { validateLoginFields, validateRegisterInput} from '../middleware/auth';
-import { login, register } from '../controllers/authController';
+import { login, refreshToken, register } from '../controllers/authController';
 import { checkUserExists, checkUserNotExists } from '../middleware/userChecks';
+import { ref } from 'process';
 
 const router = Router();
 
@@ -139,5 +140,53 @@ router.post('/signup', validateRegisterInput, checkUserNotExists, register);
  *                   type: string
  */
 router.post('/login', validateLoginFields, checkUserExists, login);
+
+/**
+ * @swagger
+ * /refresh:
+ *   post:
+ *     summary: Refresh access token
+ *     description: Refresh access token
+ *     tags:
+ *       - Public
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Refresh token successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+router.post('/refresh', refreshToken);
 
 export default router;

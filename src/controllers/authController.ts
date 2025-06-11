@@ -83,7 +83,27 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
       role: user.role,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "1d" });
+    //creating a access token
+        const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "10m" });
+
+        // Creating refresh token with longer expiration date than access token
+        const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET!, { expiresIn: '1d' });
+
+        // Assigning refresh token in http-only cookie 
+        res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
+
+        // send JWT token in response
+        res.status(HTTP_STATUS.OK).json({
+          message: "Login successful",
+          user: {
+            username: user.username,
+            email: user.email,
+            role: user.role,
+          },
+          accessToken,
+        });
+
+/*     const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
     // send JWT token in response
     res.status(HTTP_STATUS.OK).json({
@@ -94,9 +114,27 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         role: user.role,
       },
       token,
-    });
+    }); */
 
   } catch (err) {
     next(err)
   }
 };
+
+export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const refreshToken = req.cookies?.jwt;
+
+  if (!refreshToken) {
+    return next(createError("Unauthorized: No refresh token found", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  try {
+    const payload: UserJwtPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as UserJwtPayload;
+    const newAccessToken = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '10m' });
+
+    res.json({ accessToken: newAccessToken });
+  } catch (err) {
+    next(createError("Unauthorized: Invalid refresh token", HTTP_STATUS.UNAUTHORIZED));
+  }
+}
+
