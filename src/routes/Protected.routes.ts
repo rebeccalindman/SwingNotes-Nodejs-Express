@@ -223,6 +223,44 @@ router.delete('/notes/:id', deleteNoteForUser);
  */
 router.get('/notes/:id', getNoteById);
 
+/**
+ * @swagger
+ * /notes/{id}:
+ *   put:
+ *     summary: Update a note
+ *     tags:
+ *       - Notes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the note to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/NewNote'
+ *     responses:
+ *       200:
+ *         description: Note updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PublicNote'
+ *       400:
+ *         description: Bad request - Missing or invalid fields
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Note not found
+ *       500:
+ *         description: Internal server error
+ */
 router.put('/notes/:id', updateNoteForUser);
 
 
