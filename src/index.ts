@@ -9,10 +9,13 @@ import ProtectedRoutes from './routes/Protected.routes';
 import { requestLogger } from './middleware/requestLogger';
 import { authorizeAdmin, verifyJWT } from './middleware/auth';
 import AdminRoutes from './routes/Admin.routes';
+import cookieParser from 'cookie-parser';
+
 
 const app = express();
 
 app.use(requestLogger); // logs API requests
+app.use(cookieParser());
 
 const port = 3000;
 
