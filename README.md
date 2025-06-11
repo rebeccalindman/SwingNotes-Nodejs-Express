@@ -95,6 +95,9 @@ All endpoints except /signup and /login require JWT-authentication
 | GET    | /admin/users                  | Get total user count and user list |
 | PATCH  | /admin/users/:id              | Update user role (user ↔ admin) |
 
+# Data diagram
+![Data Diagram](docs/data-diagram.png)
+
 # 📚 Swagger Docs
 Visit: http://localhost:3000/api-docs to explore the API with Swagger UI.
 
