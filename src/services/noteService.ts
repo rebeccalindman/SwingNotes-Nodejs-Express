@@ -173,3 +173,11 @@ export const fetchNoteById = async (noteId: string): Promise<Note | null> => {
 
   return result.rows[0] || null;
 };
+
+export const removeAccessToNoteFromDB = async (noteId: string) => {
+  await pool.query(
+    `DELETE FROM note_user
+     WHERE note_id = $1 AND access_level != 'owner'`,
+    [noteId]
+  );
+};

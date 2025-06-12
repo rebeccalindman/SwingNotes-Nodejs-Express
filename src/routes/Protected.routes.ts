@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getAllSharedNotesForUser, getNoteAccessList, getNoteById, getNotesBySearchTerm, getNotesForCategory, shareNoteWithUser, updateNoteForUser } from '../controllers/notesController';
+import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getAllSharedNotesForUser, getNoteAccessList, getNoteById, getNotesBySearchTerm, getNotesForCategory, revokeAccessToNote, shareNoteWithUser, updateNoteForUser } from '../controllers/notesController';
 import { validateNewNote } from '../middleware/validateNewNote';
 import { attachNoteAccessLevel } from '../middleware/noteAccess';
 
@@ -307,6 +307,8 @@ router.put('/notes/:id', attachNoteAccessLevel, updateNoteForUser);
  *         description: Internal server error
  */
 router.post ('/notes/:id/share', attachNoteAccessLevel, shareNoteWithUser);
+
+router.delete ('/notes/:id/share', attachNoteAccessLevel, revokeAccessToNote);
 
 router.get('/notes/:id/access-list', attachNoteAccessLevel, getNoteAccessList);
 

@@ -13,7 +13,8 @@ import {
     fetchAllSharedNotesForUser,
     fetchSharedNotesBySearchTerm,
     fetchNoteAccessList,
-    fetchNoteById
+    fetchNoteById,
+    removeAccessToNoteFromDB
 } from "../services/noteService";
 
 import { findUserByUsername } from "../services/userService";
@@ -50,6 +51,10 @@ export const createNote = async (
 export const getNoteById = async (req: TypedAuthRequest<any>, res: Response, next: NextFunction) => {
   const userId = req.user?.id;
   const noteId = req.params.id;
+
+  if (!hasReadAccess(req)) {
+    return next(createError(`Forbidden: You need read access to view this note, you have ${req.accessLevel} access`, HTTP_STATUS.FORBIDDEN));
+  }
 
   if (!userId) {
     return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
@@ -271,6 +276,10 @@ export const shareNoteWithUser = async (req: Request, res: Response, next: NextF
   const { username, accessLevel = 'read'} = req.body as SharedNoteInput;
   const sharedWith = username;
 
+  if (accessLevel !== 'read' && accessLevel !== 'edit') {
+    return next(createError("Invalid access level, should be 'read' or 'edit'", HTTP_STATUS.BAD_REQUEST));
+  }
+
   if (!hasOwnerAccess(req)) {
     return next(createError(`Forbidden: Only owners can share this note, you have ${req.accessLevel} access`, 403));
   }
@@ -318,6 +327,31 @@ export const getNoteAccessList = async (req: Request, res: Response, next: NextF
     res.status(200).json({ accessList });
   } catch (err) {
     console.error("Error fetching access list:", err);
+    next(createError("Internal Server Error", 500));
+  }
+};
+
+export const revokeAccessToNote = async (req: Request, res: Response, next: NextFunction) => {
+  const noteId = req.params.id;
+  const userId = req.user?.id;
+  
+  if (!userId) {
+    return next(createError("Unauthorized, user ID in request not found", 401));
+  }
+
+  if (!isUUID(noteId)) {
+    return next(createError("Invalid note ID", 400));
+  }
+
+  if (!hasOwnerAccess(req)) {
+    return next(createError(`Forbidden: Only owners can revoke access to this note, you have ${req.accessLevel} access`, 403));  
+  }
+
+  try {
+    await removeAccessToNoteFromDB(noteId);
+    res.status(200).json({ message: "Access revoked successfully" });
+  } catch (err) {
+    console.error("Error revoking access:", err);
     next(createError("Internal Server Error", 500));
   }
 };
