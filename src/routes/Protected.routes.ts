@@ -93,6 +93,29 @@ router.get('/notes/categories/:category', getNotesForCategory)
  */
 router.get('/notes/search', getNotesBySearchTerm);
 
+/**
+ * @swagger
+ * /notes/shared:
+ *   get:
+ *     summary: Get all notes shared with the user, which the user does not own themselves
+ *     tags:
+ *       - Notes
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Notes found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/PublicNote'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/notes/shared', getAllSharedNotesForUser);
 
 // notes-list - get all notes
