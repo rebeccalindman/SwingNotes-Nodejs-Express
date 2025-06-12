@@ -125,3 +125,7 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
   }
 }
 
+export const logout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
+  res.status(HTTP_STATUS.OK).json({ message: "Logout successful" });
+}

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validateLoginFields, validateRegisterInput} from '../middleware/auth';
-import { login, refreshToken, register } from '../controllers/authController';
+import { login, logout, refreshToken, register } from '../controllers/authController';
 import { checkUserExists, checkUserNotExists } from '../middleware/userChecks';
 import { ref } from 'process';
 
@@ -188,5 +188,23 @@ router.post('/login', validateLoginFields, checkUserExists, login);
  *                   type: string
  */
 router.post('/refresh', refreshToken);
+
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: Logout
+ *     description: Logout the user
+ *     tags:
+ *       - Public
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.post ('/logout', logout);
 
 export default router;
