@@ -308,8 +308,83 @@ router.put('/notes/:id', attachNoteAccessLevel, updateNoteForUser);
  */
 router.post ('/notes/:id/share', attachNoteAccessLevel, shareNoteWithUser);
 
-router.delete ('/notes/:id/share', attachNoteAccessLevel, revokeAccessToNote);
+/**
+ * @swagger
+ * /notes/{id}/share:
+ *   delete:
+ *     summary: Revoke access for other users to a shared note
+ *     tags:
+ *       - Notes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the note to revoke access
+ *     responses:
+ *       200:
+ *         description: Access revoked successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Access revoked successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       500:
+ *         description: Internal server error
+ */
+router.delete('/notes/:id/share', attachNoteAccessLevel, revokeAccessToNote);
 
+/**
+ * @swagger
+ * /notes/{id}/access-list:
+ *   get:
+ *     summary: Get access list of a note
+ *     tags:
+ *       - Notes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the note to get access list
+ *     responses:
+ *       200:
+ *         description: Access list retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessList:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       username:
+ *                         type: string
+ *                       accessLevel:
+ *                         type: string
+ *                         enum: [read, edit, owner]
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/notes/:id/access-list', attachNoteAccessLevel, getNoteAccessList);
 
 
