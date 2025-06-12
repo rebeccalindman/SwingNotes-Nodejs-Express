@@ -99,7 +99,7 @@ router.get('/notes/search', getNotesBySearchTerm);
  *   get:
  *     summary: Get all notes shared with the user, which the user does not own themselves
  *     tags:
- *       - Notes
+ *       - Note-sharing
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -296,7 +296,7 @@ router.put('/notes/:id', attachNoteAccessLevel, updateNoteForUser);
  *   post:
  *     summary: Share a note with another user
  *     tags:
- *       - Notes
+ *       - Note-sharing
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -337,7 +337,7 @@ router.post ('/notes/:id/share', attachNoteAccessLevel, shareNoteWithUser);
  *   delete:
  *     summary: Revoke access for other users to a shared note
  *     tags:
- *       - Notes
+ *       - Note-sharing
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -373,7 +373,7 @@ router.delete('/notes/:id/share', attachNoteAccessLevel, revokeAccessToNote);
  *   get:
  *     summary: Get access list of a note
  *     tags:
- *       - Notes
+ *       - Note-sharing
  *     security:
  *       - bearerAuth: []
  *     parameters:
