@@ -1,6 +1,8 @@
 import { Router } from 'express';
-import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getNoteById, getNotesBySearchTerm, getNotesForCategory, updateNoteForUser } from '../controllers/notesController';
+import { createNote, deleteNoteForUser, getAllCategoriesForUser, getAllNotesForUser, getAllSharedNotesForUser, getNoteAccessList, getNoteById, getNotesBySearchTerm, getNotesForCategory, shareNoteWithUser, updateNoteForUser } from '../controllers/notesController';
 import { validateNewNote } from '../middleware/validateNewNote';
+import { attachNoteAccessLevel } from '../middleware/noteAccess';
+
 
 
 const router = Router();
@@ -90,6 +92,8 @@ router.get('/notes/categories/:category', getNotesForCategory)
  *         description: Internal server error
  */
 router.get('/notes/search', getNotesBySearchTerm);
+
+router.get('/notes/shared', getAllSharedNotesForUser);
 
 // notes-list - get all notes
 /**
@@ -189,7 +193,7 @@ router.post("/notes", validateNewNote, createNote);
  *       500:
  *         description: Internal server error
  */
-router.delete('/notes/:id', deleteNoteForUser);
+router.delete('/notes/:id', attachNoteAccessLevel, deleteNoteForUser);
 // get one note
 /**
  * @swagger
@@ -221,7 +225,7 @@ router.delete('/notes/:id', deleteNoteForUser);
  *       500:
  *         description: Internal server error
  */
-router.get('/notes/:id', getNoteById);
+router.get('/notes/:id', attachNoteAccessLevel, getNoteById);
 
 /**
  * @swagger
@@ -261,7 +265,50 @@ router.get('/notes/:id', getNoteById);
  *       500:
  *         description: Internal server error
  */
-router.put('/notes/:id', updateNoteForUser);
+router.put('/notes/:id', attachNoteAccessLevel, updateNoteForUser);
+
+/**
+ * @swagger
+ * /notes/{id}/share:
+ *   post:
+ *     summary: Share a note with another user
+ *     tags:
+ *       - Notes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the note to share
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SharedNoteInput'
+ *     responses:
+ *       201:
+ *         description: Note shared successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: Note shared successfully
+ *       400:
+ *         description: Bad request - Missing or invalid fields
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Note not found
+ *       500:
+ *         description: Internal server error
+ */
+router.post ('/notes/:id/share', attachNoteAccessLevel, shareNoteWithUser);
+
+router.get('/notes/:id/access-list', attachNoteAccessLevel, getNoteAccessList);
 
 
 export default router;

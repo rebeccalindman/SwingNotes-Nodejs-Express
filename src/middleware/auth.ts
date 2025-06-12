@@ -23,7 +23,7 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
     console.log("Token:", token);
     
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, JWT_SECRET) as UserJwtPayload | string;
 
         if (
             typeof decoded === "object" &&

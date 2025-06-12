@@ -135,6 +135,20 @@ const options: swaggerJsdoc.Options = {
               example: 'Error message',
             },
           },
+        },
+        SharedNoteInput: {
+          type: 'object',
+          required: ['username', 'accessLevel'],
+          properties: {
+            username: {
+              type: 'string',
+            },
+            accessLevel: {
+              type: 'string',
+              enum: ['read', 'edit', 'owner'],
+              default: 'read',
+            },
+          },
         }
       },    
     },

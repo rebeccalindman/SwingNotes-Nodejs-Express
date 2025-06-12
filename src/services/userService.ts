@@ -46,3 +46,12 @@ export async function updateRoleOfUser(userId: string, role: string) {
   const result = await pool.query("UPDATE users SET role = $1 WHERE id = $2", [role, userId]);
   return result.rows[0] || null;
 }
+
+
+export async function checkIfOtherUserExists(userId: string) {
+  const result = await pool.query("SELECT username FROM users WHERE userId = $1", [userId]);
+  if (result.rows.length > 0) {
+    return true;
+  }
+  return false;
+}
