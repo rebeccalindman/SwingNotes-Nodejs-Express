@@ -105,6 +105,15 @@ const options: swaggerJsdoc.Options = {
               format: 'date-time',
               nullable: true,
             },
+            owned_notes: {
+              type: 'number',
+            },
+            shared_notes: {
+              type: 'number',
+            },
+            by_others_shared_notes: {
+              type: 'number',
+            },
           },
         },
         NewUser: {

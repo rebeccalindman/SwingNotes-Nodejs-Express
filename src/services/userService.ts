@@ -40,7 +40,7 @@ export async function fetchAllUsers(): Promise<PublicUser[]> {
     created_at: row.created_at,
     updated_at: row.updated_at,
     owned_notes: row.owned_notes,
-    shared_notes: row.shared_notes,
+    by_others_shared_notes: row.shared_notes,
   }));
 }
 
