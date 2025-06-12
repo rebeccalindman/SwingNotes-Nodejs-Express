@@ -105,6 +105,15 @@ const options: swaggerJsdoc.Options = {
               format: 'date-time',
               nullable: true,
             },
+            owned_notes: {
+              type: 'number',
+            },
+            shared_notes: {
+              type: 'number',
+            },
+            by_others_shared_notes: {
+              type: 'number',
+            },
           },
         },
         NewUser: {
@@ -133,6 +142,20 @@ const options: swaggerJsdoc.Options = {
             error: {
               type: 'string',
               example: 'Error message',
+            },
+          },
+        },
+        SharedNoteInput: {
+          type: 'object',
+          required: ['username', 'accessLevel'],
+          properties: {
+            username: {
+              type: 'string',
+            },
+            accessLevel: {
+              type: 'string',
+              enum: ['read', 'edit', 'owner'],
+              default: 'read',
             },
           },
         }

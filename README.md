@@ -12,7 +12,7 @@ A secure and structured backend API built with Node.js, Express, PostgreSQL, and
 4. Set up neccessary .env variables, copy the .env.example and rename it .env
     - set up connection with database (e.g. Neon)
     - set a generated secret key
-5. (If needed, run the SQL commands provided in ``/docs/setUpPSQL.md`` )
+5. (If needed, run the SQL commands provided in ``/docs/setUpPSQL.md`` to set up the basic DB structure in e.g. Neon or pgAdmin (requires alternative db.ts setup) )
 
 # Running the App (Dev Mode)
 
@@ -28,6 +28,7 @@ This is a stand-alone backend project that allows the storage of personal notes 
 * User authentication with JWT
 * Password hashing using bcrypt
 * CRUD operations for personal notes
+* Share notes with other users (read or edit access)
 * Role-based access control (user, admin)
 * Optional note categories and full-text search
 * Swagger API documentation
@@ -66,12 +67,22 @@ All notes can only be accessed by their owner (a verified user)
 - Timestamps ``created_at``and ``updated_at`` are handled by DB
 - Notes can be searched by title
 
+## 🔗 Note Sharing
+- Notes can be shared with other users, giving them either:
+- *Read access* (can view)
+- *Edit access* (can modify)
+- Only the *owner* can delete a note or change its sharing settings
+
+## 👥 Access Levels
+Each user has one of the following access levels per note:
+- owner: Full control
+- edit: Can read and update the note
+- read: Can only view the note
+
+
 # Endpoints 
 All endpoints except /signup and /login require JWT-authentication
 
-Aditional admin endpoints allow used manipulation:
-- GET /admin/users - gets a total count of users (number) and an array of users
-- PATCH /admin/users/:id - allows admin to change the user role for any user to either 'admin' or 'user'
 
 ## 🌍 Public
 | Method | Route  | Description          |
@@ -90,6 +101,9 @@ Aditional admin endpoints allow used manipulation:
 | GET    | /notes/search?q=term          | Search notes by title     |
 | GET    | /notes/categories             | Get all used categories   |
 | GET    | /notes/categories/:category   | Get notes by category     |
+| GET    | /notes/:id/access-list        | Get a list of users with access to a note
+| POST   | /notes/:id/share              | Share a note with another user
+| DELETE | /notes/:id/share              | Revoke all sharing access to a note
 
 
 ## 🧑‍💼 Admin Endpoints (requires admin role)
@@ -97,6 +111,9 @@ Aditional admin endpoints allow used manipulation:
 |--------|-------------------------------|---------------------------|
 | GET    | /admin/users                  | Get total user count and user list |
 | PATCH  | /admin/users/:id              | Update user role (user ↔ admin) |
+
+# Data diagram
+![Data Diagram](docs/data-diagram.png)
 
 # 📚 Swagger Docs
 Visit: http://localhost:3000/api-docs to explore the API with Swagger UI.

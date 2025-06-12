@@ -55,7 +55,6 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     const { password } = req.body;
     const user = (req as RequestWithUser).user;
-    console.log(user);
 
     if (!user?.hashedpassword) {
       return next(createError("Incorrect user credentials", HTTP_STATUS.INTERNAL_SERVER_ERROR));
@@ -83,7 +82,12 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
       role: user.role,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "1d" });
+    const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "10m" });
+
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET!, { expiresIn: '1d' });
+
+    // Assigning refresh token in http-only cookie 
+    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
 
     // send JWT token in response
     res.status(HTTP_STATUS.OK).json({
@@ -93,10 +97,35 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         email: user.email,
         role: user.role,
       },
-      token,
+      accessToken,
     });
 
   } catch (err) {
     next(err)
   }
 };
+
+export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const refreshToken = req.cookies?.jwt;
+
+  if (!refreshToken) {
+    return next(createError("Unauthorized: No refresh token found", HTTP_STATUS.UNAUTHORIZED));
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!, {
+      algorithms: ['HS256'],
+    });
+    const { id, username, email, role } = decoded as UserJwtPayload;
+    const newPayload = { id, username, email, role };
+
+    res.json({ accessToken: jwt.sign(newPayload, process.env.JWT_SECRET!, { expiresIn: '10m' }) });
+  } catch (err) {
+    return next(createError("Unauthorized: Invalid refresh token", HTTP_STATUS.UNAUTHORIZED));
+  }
+}
+
+export const logout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
+  res.status(HTTP_STATUS.OK).json({ message: "Logout successful" });
+}

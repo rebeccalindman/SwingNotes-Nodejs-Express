@@ -23,8 +23,25 @@ export const addNewUser = async (user: NewUser): Promise<PublicUser> => {
 
 
 export async function fetchAllUsers(): Promise<PublicUser[]> {
-    const result = await pool.query("SELECT id, username, email, role, created_at, updated_at FROM users");
-    return result.rows;
+  const result = await pool.query(`
+    SELECT u.id, u.username, u.email, u.role, u.created_at, u.updated_at,
+           COUNT(DISTINCT n.id) FILTER (WHERE n.owner_id = u.id) AS owned_notes,
+           COUNT(DISTINCT nu.note_id) FILTER (WHERE nu.user_id = u.id AND nu.access_level != 'owner') AS shared_notes
+    FROM users u
+    LEFT JOIN notes n ON n.owner_id = u.id
+    LEFT JOIN note_user nu ON nu.user_id = u.id
+    GROUP BY u.id, u.username, u.email, u.role, u.created_at, u.updated_at
+  `);
+  return result.rows.map((row) => ({
+    id: row.id,
+    username: row.username,
+    email: row.email,
+    role: row.role,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+    owned_notes: row.owned_notes,
+    by_others_shared_notes: row.shared_notes,
+  }));
 }
 
 export async function findUserByEmail(email: string) {
@@ -46,3 +63,13 @@ export async function updateRoleOfUser(userId: string, role: string) {
   const result = await pool.query("UPDATE users SET role = $1 WHERE id = $2", [role, userId]);
   return result.rows[0] || null;
 }
+
+
+export async function checkIfOtherUserExists(userId: string) {
+  const result = await pool.query("SELECT username FROM users WHERE userId = $1", [userId]);
+  if (result.rows.length > 0) {
+    return true;
+  }
+  return false;
+}
+
