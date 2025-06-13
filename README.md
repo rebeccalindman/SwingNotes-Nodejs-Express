@@ -88,7 +88,9 @@ All endpoints except /signup and /login require JWT-authentication
 | Method | Route  | Description          |
 |--------|--------|----------------------|
 | POST   | /signup | Create user account  |
-| POST   | /login  | Login and get JWT    |
+| POST   | /login  | Login and get JWT access token and refresh token   |
+| POST   | /refresh | Generate new JWT access token  |
+| POST   | /logout  | Sign out and remove refresh token from cookies   |
 
 ## 📝 Notes (for authenticated users)
 | Method | Route                         | Description               |
@@ -101,9 +103,15 @@ All endpoints except /signup and /login require JWT-authentication
 | GET    | /notes/search?q=term          | Search notes by title     |
 | GET    | /notes/categories             | Get all used categories   |
 | GET    | /notes/categories/:category   | Get notes by category     |
-| GET    | /notes/:id/access-list        | Get a list of users with access to a note
-| POST   | /notes/:id/share              | Share a note with another user
-| DELETE | /notes/:id/share              | Revoke all sharing access to a note
+
+
+## 📝 Note-sharing (for authenticated users)
+| Method | Route                         | Description               |
+|--------|-------------------------------|---------------------------|
+| GET    | /notes/shared                 | Get a list of all notes shared with the user |
+| GET    | /notes/:id/access-list        | Get a list of users with access to a note |
+| POST   | /notes/:id/share              | Share a note with another user |
+| DELETE | /notes/:id/share              | Revoke all sharing access to a note |
 
 
 ## 🧑‍💼 Admin Endpoints (requires admin role)
@@ -125,7 +133,7 @@ Centralized error handling with consistent error responses.
 
 Designed with modular, reusable code (controllers, routes, middleware).
 
-verifyJWT middleware enriches req.user for role-based logic.
+verifyJWT middleware for role-based logic.
 
 # ✅ Todos / Future Improvements
 - [ ] Add pagination and filtering for large note lists
