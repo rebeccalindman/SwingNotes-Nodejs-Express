@@ -13,7 +13,7 @@ const router = Router();
  *     summary: Register a new user account
  *     description: Register a new user account
  *     tags:
- *       - public
+ *       - Public
  *     requestBody:
  *       required: true
  *       content:
@@ -65,7 +65,7 @@ router.post('/signup', validateRegisterInput, checkUserNotExists, register);
  *     summary: Login a user
  *     description: Login a user using either email or username, and password
  *     tags:
- *       - public
+ *       - Public
  *     requestBody:
  *       required: true
  *       content:
