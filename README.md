@@ -88,7 +88,9 @@ All endpoints except /signup and /login require JWT-authentication
 | Method | Route  | Description          |
 |--------|--------|----------------------|
 | POST   | /signup | Create user account  |
-| POST   | /login  | Login and get JWT    |
+| POST   | /login  | Login and get JWT access token and refresh token   |
+| POST   | /refresh | Generate new JWT access token  |
+| POST   | /signout  | Sign out and remove refresh token from cookies   |
 
 ## 📝 Notes (for authenticated users)
 | Method | Route                         | Description               |
