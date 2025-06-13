@@ -30,7 +30,7 @@ This is a stand-alone backend project that allows the storage of personal notes 
 * CRUD operations for personal notes
 * Share notes with other users (read or edit access)
 * Role-based access control (user, admin)
-* Optional note categories and full-text search
+* Optional note categories and title search
 * Swagger API documentation
 * Structured error handling and logging middleware
 
