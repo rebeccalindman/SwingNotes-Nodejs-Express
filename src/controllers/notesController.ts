@@ -319,7 +319,7 @@ export const getNoteAccessList = async (req: Request, res: Response, next: NextF
   const noteId = req.params.id;
   
   if (!isUUID(noteId)) {
-    return next(createError("Invalid note ID", 400));
+    return next(createError("Invalid note ID", HTTP_STATUS.BAD_REQUEST));
   }
 
   try {
@@ -327,7 +327,7 @@ export const getNoteAccessList = async (req: Request, res: Response, next: NextF
     res.status(200).json({ accessList });
   } catch (err) {
     console.error("Error fetching access list:", err);
-    next(createError("Internal Server Error", 500));
+    next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));
   }
 };
 
