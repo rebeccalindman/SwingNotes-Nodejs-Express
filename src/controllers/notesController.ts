@@ -336,15 +336,15 @@ export const revokeAccessToNote = async (req: Request, res: Response, next: Next
   const userId = req.user?.id;
   
   if (!userId) {
-    return next(createError("Unauthorized, user ID in request not found", 401));
+    return next(createError("Unauthorized, user ID in request not found", HTTP_STATUS.UNAUTHORIZED));
   }
 
   if (!isUUID(noteId)) {
-    return next(createError("Invalid note ID", 400));
+    return next(createError("Invalid note ID", HTTP_STATUS.BAD_REQUEST));
   }
 
   if (!hasOwnerAccess(req)) {
-    return next(createError(`Forbidden: Only owners can revoke access to this note, you have ${req.accessLevel} access`, 403));  
+    return next(createError(`Forbidden: Only owners can revoke access to this note, you have ${req.accessLevel} access`, HTTP_STATUS.FORBIDDEN));  
   }
 
   try {
@@ -352,6 +352,6 @@ export const revokeAccessToNote = async (req: Request, res: Response, next: Next
     res.status(200).json({ message: "Access revoked successfully" });
   } catch (err) {
     console.error("Error revoking access:", err);
-    next(createError("Internal Server Error", 500));
+    next(createError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR));
   }
 };
