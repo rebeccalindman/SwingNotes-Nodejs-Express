@@ -251,7 +251,7 @@ export const updateNoteForUser = async (req: TypedAuthRequest<NewNote>, res: Res
     }
 
     try {
-        const updatedNote = await updateNote(noteId, userId, req.body);
+        const updatedNote = await updateNote(noteId, userId, newNote);
         res.status(HTTP_STATUS.OK).json({ message: "Note updated successfully", note: updatedNote });
     } catch (err) {
         console.error("Error updating note:", err);
